@@ -1,0 +1,88 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<div id='cities'>
+			
+		</div>
+		<form action='/registerStudent' method='post' id='addmisionForm'>
+			<label for='name'> Name </label>
+			<input type='text' name='firstName' placeholder='First Name'/>
+			<input type='text' name='middleName' placeholder='Middle Name'/>
+			<input type='text' name='lastName' placeholder='Last Name'/>
+			<br>
+			<label for='gender'>Gender : </label>
+			<input type='radio' name='gender' value='male'/> Male
+			<input type='radio' name='gender' value='female'/>Female
+			<br>
+			City : <select name='cityID' id='selectCity'></select>
+			<br>
+			<label for='aadharNo'> Aadhar No. </label>
+			<input type='text' name='aadharNo' placeholder='e.g. xxxx xxxx 1234' pattern='[0-9]{12}'/>
+			<br>
+			<label for='degree'>Degree : </label>
+			<select id='selectDegree'>
+				<option value='' id='firstEle'>--select degree--</option>
+			</select>
+			<br>
+			<label for='course'>Course : </label>
+			<select id='selectCourse'>
+				<option value=''> --first select degree--</option>
+			</select>
+			<label for='quta'>Quta : </label>
+			<select id='selectQuta'></select>
+		</form>
+
+		<script>
+			let selectCity		= document.getElementById('selectCity');
+			let addmisionForm	= document.getElementById('addmisionForm');
+			let selectDegree	= document.getElementById('selectDegree');
+			let selectCourse	= document.getElementById('selectCourse');
+			let selectQuta		= document.getElementById('selectQuta');
+
+			async function fetchCity(){
+				const response = await fetch("/fetchCity")
+				const	cities = await response.json();
+				for(let i=0; i<cities.length; i++){
+					selectCity.innerHTML += `<option value='${cities[i].cityID}'>${cities[i].city}</option>` 
+				}
+			}
+
+			async function fetchDegree(){
+				const response	= await fetch('/fetchDegree');
+				const degrees	= await response.json();
+				console.log(degrees);
+
+				for(let i=0; i<degrees.length; i++){
+					selectDegree.innerHTML += `<option value='${degrees[i].degreeID}'>${degrees[i].degree}</option>`
+				}
+			}
+
+			selectDegree.addEventListener('input', async ()=>{
+				document.getElementById('firstEle').setAttribute('disabled','');
+				const response	= await fetch(`/fetchCourse/${selectDegree.value}`);
+				const courses	= await response.json();
+				selectCourse.innerHTML = '';
+				//selectCourse.innerHTML = `<option value='' disabled>--select course--<option>`;
+				courses.forEach((course) => {
+					selectCourse.innerHTML += `<option value='${course.courseID}'>
+													${course.course}
+											   </option>`
+				})
+			})
+
+			async function fetchAddmisionQuta(){
+				const response	= await fetch('/fetchAddmisionQuta');
+				const qutas		= await response.json();
+				qutas.forEach( (quta) => {
+					selectQuta.innerHTML += `<option value='${quta.qutaID}'>
+											${quta.quta}
+											</option>`
+				})
+			}
+			fetchCity();
+			fetchDegree();
+			fetchAddmisionQuta();
+		</script>
+	</body>
+</html>
