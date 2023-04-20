@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect
-import json;
 from flaskext.mysql import MySQL
-import os
 from werkzeug.utils import secure_filename
+import os
+import json;
 import random
 import string
 
@@ -173,37 +173,52 @@ def login():
         designation = response[0][1];
 
         if(password == None or password == ''):
+            connection.close();
             return 'type password';
         elif password != passwordDB:
+            connection.close();
             return 'wrongPassword'
         elif(password == passwordDB):
-            return 'student';
+            cursor.execute(f"select SID from studentDetails inner join loginPassword on loginPassword.userID = studentDetails.userID where loginPassword.userId = {userID}");
+            response = cursor.fetchall();
+            connection.close();
+            SID = response[0][0];
+            return redirect(f"/studentsPane/student?studentID={SID}")
+
+
 
     return render_template('loginForm.html');
-
-@app.route('/login1', methods = ['post'])
-def login1():
-    userID = request.form.get('userID');
-    password = request.form.get('password');
-
-    connection  = mysql.connect();
-    cursor      = connection.cursor();
-
-    cursor.execute(f"select password, designation from loginPassword where userID = '{userID}'");
-    response = cursor.fetchall();
-    passwordDB  = response[0][0];
-    designation = response[0][1];
-
-    if(password == None or password == ''):
-        return 'wrongPassword';
-    elif(password == passwordDB):
-        return 'student';
-
-    return 'hello successfull'
-
-
 
 @app.route('/p')
 def p():
     return render_template('photo.html');
+
+@app.route('/studentsPane/student')
+def studentsPane():
+    SID = int( request.args.get('studentID'));
+    
+    connection  = mysql.connect();
+    cursor      = connection.cursor();
+    
+    cursor.execute(f"select current_student_details.enrollmentNo, degree.degree, courses.course, current_student_details.currentDiv, current_student_details.semester, current_student_details.batchNo, current_student_details.rollNo, studentDetails.FirstName, studentDetails.MiddleName, studentDetails.LastName, studentDetails.photoPath from current_student_details inner join studentDetails on studentDetails.SID = current_student_details.SID inner join courses  on courses.courseID = studentDetails.courseID inner join Degree on Degree.degreeID = courses.degreeID where studentDetails.SID = {SID}");
+    response = cursor.fetchall()
+    columns  = ['enrollmentNo', 'degree', 'course', 'currentDiv', 'semester',
+                'batchNo', 'rollNo', 'FirstName', 'MiddleName', 'LastName', 'photoPath'];
+
+    studentDetails = dict( zip(columns, response[0]) );
+
+    cursor.execute(f"Select contactDetails.ContactNo from contactDetails inner join studentWiseContact on studentWiseContact.contactId = contactDetails.contactId where SID = {SID} order by SID");
+    response = cursor.fetchall();
+    studentDetails["studentPhone"] = response[0][0];
+    try:
+        studentDetails["fathersPhone"] = response[1][0];
+    except:
+        studentDetails["fathersPhone"] = ' - ';
+
+    connection.close();
+
+    print( studentDetails );
+    #return 'okey';
+    return render_template('studentPanel.html',StudentDetails = studentDetails);
+    #return render_template('abc.html',StudentDetails = studentDetails);
 

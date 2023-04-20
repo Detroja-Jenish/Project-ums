@@ -1,0 +1,68 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+		<header>
+			<img src="{{ url_for('static', filename='students/logo.png' )}}"/>
+			<div class="studentHeader">
+			<img src="{{ url_for('static',filename=StudentDetails.photoPath ) }}" >
+				<div>
+					hi,<span class="fontGreen"> {{ StudentDetails.FirstName}} {{StudentDetails.MiddleName}} {{StudentDetails.LastName}} </span>
+				</div>
+			</div>
+		</header>
+
+		<div class="navigationLinks">
+			<a href="">Dashboard</a>
+			<a href="">Personal</a>
+			<a href="">Timeable/Attadence</a>
+			<a href="">LMS</a>
+			<a href="">Mid Exam</a>
+			<a href="">Fee</a>
+			<a href="">Mentoring</a>
+			<a href="">Feedback</a>
+		</div>
+
+		<div class="titleOfPage">
+			<h2>DASH BOARD</h2>
+			<span> {{ StudentDetails.FirstName}} {{StudentDetails.MiddleName}} {{StudentDetails.LastName}} </span>
+		</div>
+
+		<div class="content">
+			<div class="studentCard">
+				<div class="wrapper">
+					<img src="{{ url_for('static',filename=StudentDetails.photoPath ) }}" >
+				</div>
+				<div class="wrapper">
+					<p class="blueFont">
+						{{ StudentDetails.FirstName}} {{StudentDetails.MiddleName}} {{StudentDetails.LastName}}
+					</p>
+					<p class="state">on roll</p>
+				</div>
+				<div class="wrapper">
+					<p>{{StudentDetails.degree}} - {{StudentDetails.degree}} - {{StudentDetails.course}}</p>
+				</div>
+				<div class="wrapper">
+					<p class="darkFont">{{StudentDetails.enrollmentNo}}</p>
+					<p class="lightGreyFont"> Semester - {{StudentDetails.semester}}</p>
+				</div>
+				<div class="wrapper">
+					<p class="lightGreyFont">CSE - 2{{StudentDetails.currentDiv}}</p>
+					<p class="lightGreyFont">Batch No. {{StudentDetails.batchNo}}</p>
+					<p class="lightGreyFont">Roll No. {{StudentDetails.rollNo}}</p>
+				</div>
+				<div class="wrapper leftAlign">
+					<p class="lightGreyFont">Student : {{StudentDetails.studentPhone}}</p>
+				</div>
+				<div class="wrapper leftAlign">
+					<p class="lightGreyFont">Father : {{StudentDetails.fathersPhone}}</p>
+				</div>
+			</div>
+
+</div>
+
+	</body>
+</html>
+
