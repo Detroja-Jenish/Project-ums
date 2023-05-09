@@ -1,0 +1,18 @@
+<html>
+	<head>
+	</head>
+	<body>
+		Jenish
+		<br>
+		<button onclick=trigger()>Go ........... </button>
+		<script>
+			const evt = new EventSource("/stream");
+			evt.onmessage = (e) => {
+				console.log(e.data);
+			}
+			function trigger(){
+				fetch("/go");
+			}
+		</script>
+	</body>
+</html>

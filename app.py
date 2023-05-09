@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, Response
 from flaskext.mysql import MySQL
 from werkzeug.utils import secure_filename
 import os
@@ -18,7 +18,9 @@ mysql.init_app(app)
 
 @app.route("/")
 def index():
-    return "hello world from flask-Application"
+#    return "hello world from flask-Application"
+    return render_template("evt.html")
+    
 
 @app.route("/addmisionForm")
 def addmisionForm():
@@ -222,3 +224,13 @@ def studentsPane():
     return render_template('studentPanel.html',StudentDetails = studentDetails);
     #return render_template('abc.html',StudentDetails = studentDetails);
 
+@app.route("/go")
+def go():
+    for i in range(5):
+        redirect("/stream?n="+str(i));
+    return "Done......."
+
+@app.route("/stream")
+def stream():
+    n = request.args.get("n");
+    return Response(n, mimetype="text/event-stream");
